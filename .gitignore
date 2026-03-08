@@ -1,0 +1,79 @@
+# Root dependencies
+node_modules/
+**/node_modules/
+
+# Build artifacts
+dist/
+**/dist/
+build/
+**/build/
+.next/
+out/
+bin/
+obj/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env
+**/.env.local
+**/.env.example
+
+# Logs
+logs/
+*.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+**/npm_error.txt
+**/npm_error_cmd.txt
+**/logs/
+
+# Editor / IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Temporary files
+/tmp
+/temp
+test_output.txt
+**/test_output.txt
+*output*.txt
+
+# Testing
+coverage/
+**/coverage/
+.nyc_output
+
+# OS specific
+Thumbs.db
+Desktop.ini
+
+# Build system
+.cache/
+.vite/
+.output/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Flutter/Mobile if needed
+.dart_tool/
+.pub-cache/
+.pub/
+android/
+ios/
+
+# Docker
+.docker/
+.dockerignore
+!docker-compose.yml

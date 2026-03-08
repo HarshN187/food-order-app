@@ -1,0 +1,29 @@
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { RestaurantsService } from './restaurants.service';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
+
+@Controller('restaurants')
+@UseGuards(RolesGuard)
+export class RestaurantsController {
+  constructor(private readonly restaurantsService: RestaurantsService) {}
+
+  @Get()
+  @Roles(Role.ADMIN, Role.MANAGER, Role.MEMBER)
+  findAll(@Req() req: any) {
+    return this.restaurantsService.findAll(req.user);
+  }
+
+  @Get(':id')
+  @Roles(Role.ADMIN, Role.MANAGER, Role.MEMBER)
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.restaurantsService.findOne(id, req.user);
+  }
+
+  @Get(':id/menu')
+  @Roles(Role.ADMIN, Role.MANAGER, Role.MEMBER)
+  getMenu(@Param('id') id: string, @Req() req: any) {
+    return this.restaurantsService.getMenu(id, req.user);
+  }
+}
