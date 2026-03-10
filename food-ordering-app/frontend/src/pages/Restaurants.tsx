@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getRestaurants } from '../api/restaurants.api';
 import type { Restaurant } from '../types';
-import { LoadingSpinner } from '../components/common/LoadingSpinner';
+import { LoadingSpinner } from '../components/common';
 import { MapPin, ChefHat } from 'lucide-react';
 
 export const Restaurants = () => {

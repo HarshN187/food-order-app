@@ -1,10 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { AddItemDto } from './dto/add-item.dto';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { Role } from '../common/enums/role.enum';
+import { CreateOrderDto, AddItemDto } from './dto';
+import { RolesGuard, Roles, Role } from '../common';
 
 @Controller('orders')
 @UseGuards(RolesGuard)
@@ -43,8 +40,8 @@ export class OrdersController {
 
   @Patch(':id/place')
   @Roles(Role.ADMIN, Role.MANAGER)
-  placeOrder(@Param('id') id: string, @Req() req: any) {
-    return this.ordersService.placeOrder(id, req.user);
+  placeOrder(@Param('id') id: string, @Req() req: any, @Body('paymentMethodId') paymentMethodId?: string) {
+    return this.ordersService.placeOrder(id, req.user, paymentMethodId);
   }
 
   @Patch(':id/cancel')

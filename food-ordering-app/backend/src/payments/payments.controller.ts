@@ -1,37 +1,45 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { Role } from '../common/enums/role.enum';
+import { CreatePaymentDto, UpdatePaymentDto } from './dto';
+import { RolesGuard, Roles, Role } from '../common';
 
 @Controller('payments')
 @UseGuards(RolesGuard)
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
+  // Admin: get ALL payment methods (across all users)
   @Get()
+  @Roles(Role.ADMIN)
+  findAll() {
+    return this.paymentsService.findAll();
+  }
+
+  // Any user: get their own payment methods
+  @Get('my')
   @Roles(Role.ADMIN, Role.MANAGER, Role.MEMBER)
-  findAll(@Req() req: any) {
+  findMine(@Req() req: any) {
     return this.paymentsService.findAllForUser(req.user.id);
   }
 
+  // Admin: create payment method for a specific user (userId in body)
   @Post()
   @Roles(Role.ADMIN)
-  create(@Body() createPaymentDto: CreatePaymentDto, @Req() req: any) {
-    return this.paymentsService.create(createPaymentDto, req.user.id);
+  create(@Body() createPaymentDto: CreatePaymentDto) {
+    return this.paymentsService.create(createPaymentDto);
   }
 
+  // Admin: update any payment method
   @Put(':id')
   @Roles(Role.ADMIN)
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto, @Req() req: any) {
-    return this.paymentsService.update(id, updatePaymentDto, req.user.id);
+  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+    return this.paymentsService.update(id, updatePaymentDto);
   }
 
+  // Admin: delete (soft) any payment method
   @Delete(':id')
   @Roles(Role.ADMIN)
-  remove(@Param('id') id: string, @Req() req: any) {
-    return this.paymentsService.remove(id, req.user.id);
+  remove(@Param('id') id: string) {
+    return this.paymentsService.remove(id);
   }
 }

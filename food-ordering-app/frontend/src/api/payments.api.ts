@@ -1,12 +1,31 @@
 import client from './client';
 import type { PaymentMethod } from '../types';
 
-export const getPaymentMethods = async (): Promise<PaymentMethod[]> => {
+export interface PaymentMethodWithUser extends PaymentMethod {
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
+export const getPaymentMethods = async (): Promise<PaymentMethodWithUser[]> => {
   const { data } = await client.get('/payments');
   return data;
 };
 
-export const createPaymentMethod = async (paymentData: Partial<PaymentMethod>): Promise<PaymentMethod> => {
+export const getMyPaymentMethods = async (): Promise<PaymentMethod[]> => {
+  const { data } = await client.get('/payments/my');
+  return data;
+};
+
+export const createPaymentMethod = async (paymentData: {
+  userId: string;
+  type: string;
+  provider?: string;
+  lastFour?: string;
+  isDefault?: boolean;
+}): Promise<PaymentMethod> => {
   const { data } = await client.post('/payments', paymentData);
   return data;
 };

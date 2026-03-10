@@ -1,14 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, QueryRunner } from 'typeorm';
-import { Order } from '../database/entities/order.entity';
-import { OrderItem } from '../database/entities/order-item.entity';
-import { Restaurant } from '../database/entities/restaurant.entity';
-import { MenuItem } from '../database/entities/menu-item.entity';
-import { Role } from '../common/enums/role.enum';
-import { OrderStatus } from '../database/enums/order-status.enum';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { AddItemDto } from './dto/add-item.dto';
+import { Repository, DataSource } from 'typeorm';
+import { Order, OrderItem, Restaurant, MenuItem } from '../database';
+import { Role } from '../common';
+import { OrderStatus } from '../database/enums';
+import { CreateOrderDto, AddItemDto } from './dto';
 
 @Injectable()
 export class OrdersService {
@@ -56,7 +52,6 @@ export class OrdersService {
       throw new ForbiddenException('You cannot access this order');
     }
     
-    // User can only modify their own draft order unless they are admin/manager modifying someone's order (though normally users only modify their own). The assignment says "All roles", meaning members can modify their own order. Admin/manager can access any order in their scope.
     if (user.role === Role.MEMBER && order.userId !== user.id) {
        throw new ForbiddenException('You can only modify your own orders');
     }
@@ -179,7 +174,7 @@ export class OrdersService {
     return order;
   }
 
-  async placeOrder(id: string, user: any) {
+  async placeOrder(id: string, user: any, paymentMethodId?: string) {
     const order = await this.findOne(id, user); // checks constraints
     
     if (order.status !== OrderStatus.DRAFT) {
@@ -188,6 +183,14 @@ export class OrdersService {
     
     if (order.orderItems.length === 0) {
       throw new BadRequestException('Cannot place an empty order');
+    }
+
+    if (paymentMethodId) {
+      order.paymentMethodId = paymentMethodId;
+    }
+
+    if (!order.paymentMethodId) {
+      throw new BadRequestException('A payment method is required to place the order');
     }
 
     order.status = OrderStatus.PLACED;

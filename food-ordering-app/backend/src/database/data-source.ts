@@ -1,13 +1,6 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { Country } from './entities/country.entity';
-import { Role } from './entities/role.entity';
-import { User } from './entities/user.entity';
-import { Restaurant } from './entities/restaurant.entity';
-import { MenuItem } from './entities/menu-item.entity';
-import { Order } from './entities/order.entity';
-import { OrderItem } from './entities/order-item.entity';
-import { PaymentMethod } from './entities/payment-method.entity';
+import { Country, Role, User, Restaurant, MenuItem, Order, OrderItem, PaymentMethod } from './entities';
 
 dotenv.config();
 

@@ -1,6 +1,9 @@
-import { IsString, IsOptional, IsBoolean, Length } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, Length, IsUUID } from 'class-validator';
 
 export class CreatePaymentDto {
+  @IsUUID()
+  userId!: string;
+
   @IsString()
   type!: string;
 

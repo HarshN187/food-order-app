@@ -1,13 +1,7 @@
-import { DataSource } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import * as bcrypt from 'bcrypt';
-import { Country } from '../entities/country.entity';
-import { Role } from '../entities/role.entity';
-import { User } from '../entities/user.entity';
-import { Restaurant } from '../entities/restaurant.entity';
-import { MenuItem } from '../entities/menu-item.entity';
-import { PaymentMethod } from '../entities/payment-method.entity';
-import { RoleType } from '../enums/role-type.enum';
+import { Country, Role, User, Restaurant, MenuItem, PaymentMethod } from '../entities';
+import { RoleType } from '../enums';
 
 async function seed() {
   const dataSource = await AppDataSource.initialize();
@@ -65,22 +59,22 @@ async function seed() {
 
   // Seed Menu Items
   const menuItemRepo = dataSource.getRepository(MenuItem);
-  
+
   // R1 items
-  for(let i=1; i<=5; i++) {
-    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r1.id, name: `Spice Dish ${i}`, price: 100 + i*50 }));
+  for (let i = 1; i <= 5; i++) {
+    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r1.id, name: `Spice Dish ${i}`, price: 100 + i * 50 }));
   }
   // R2 items
-  for(let i=1; i<=5; i++) {
-    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r2.id, name: `Street Food ${i}`, price: 50 + i*20 }));
+  for (let i = 1; i <= 5; i++) {
+    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r2.id, name: `Street Food ${i}`, price: 50 + i * 20 }));
   }
   // R3 items
-  for(let i=1; i<=5; i++) {
-    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r3.id, name: `Burger Item ${i}`, price: 10 + i*2 }));
+  for (let i = 1; i <= 5; i++) {
+    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r3.id, name: `Burger Item ${i}`, price: 10 + i * 2 }));
   }
   // R4 items
-  for(let i=1; i<=5; i++) {
-    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r4.id, name: `Pizza Slice ${i}`, price: 5 + i*2 }));
+  for (let i = 1; i <= 5; i++) {
+    await menuItemRepo.save(menuItemRepo.create({ restaurantId: r4.id, name: `Pizza Slice ${i}`, price: 5 + i * 2 }));
   }
   console.log('Menu Items seeded');
 

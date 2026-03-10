@@ -26,8 +26,8 @@ export const removeOrderItem = async (orderId: string, itemId: string): Promise<
   return data;
 };
 
-export const placeOrder = async (id: string): Promise<Order> => {
-  const { data } = await client.patch(`/orders/${id}/place`);
+export const placeOrder = async (id: string, paymentMethodId?: string): Promise<Order> => {
+  const { data } = await client.patch(`/orders/${id}/place`, { paymentMethodId });
   return data;
 };
 

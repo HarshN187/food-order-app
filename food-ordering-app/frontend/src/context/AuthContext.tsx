@@ -1,6 +1,6 @@
 import { createContext, useState, type ReactNode, useEffect, useContext } from 'react';
 import type { User, Role } from '../types';
-import { login as apiLogin } from '../api/auth.api';
+import { login as apiLogin, getProfile } from '../api/auth.api';
 import { setAuthToken } from '../api/client';
 
 interface AuthContextType {
@@ -21,10 +21,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Since we are not allowed to use localStorage by prompt requirements, 
-    // reloading the page will lose the session.
-    // If we wanted persistence, we would load token from storage here and call getProfile.
-    setIsLoading(false);
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (storedToken && storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setToken(storedToken);
+          setUser(parsedUser);
+          setAuthToken(storedToken);
+
+          // Optionally verify the token with the server
+          const profile = await getProfile();
+          setUser(profile);
+          localStorage.setItem('user', JSON.stringify(profile));
+        } catch (error) {
+          console.error('Failed to restore session:', error);
+          logout();
+        }
+      }
+      setIsLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -33,6 +53,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(data.access_token);
       setUser(data.user);
       setAuthToken(data.access_token);
+
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(data.user));
     } catch (error) {
       throw error;
     }
@@ -42,6 +65,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setToken(null);
     setAuthToken(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   const hasRole = (role: Role | Role[]): boolean => {

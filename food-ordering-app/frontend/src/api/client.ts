@@ -8,6 +8,12 @@ const client = axios.create({
   },
 });
 
+// Pre-initialize token from localStorage if it exists
+const initialToken = localStorage.getItem('token');
+if (initialToken) {
+  client.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`;
+}
+
 export const setAuthToken = (token: string | null) => {
   if (token) {
     client.defaults.headers.common['Authorization'] = `Bearer ${token}`;

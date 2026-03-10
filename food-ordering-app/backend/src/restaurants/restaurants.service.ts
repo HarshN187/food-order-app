@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Restaurant } from '../database/entities/restaurant.entity';
-import { MenuItem } from '../database/entities/menu-item.entity';
-import { Role } from '../common/enums/role.enum';
+import { Restaurant, MenuItem } from '../database';
+import { Role } from '../common';
 
 @Injectable()
 export class RestaurantsService {

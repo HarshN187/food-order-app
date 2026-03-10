@@ -1,25 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { RestaurantsModule } from './restaurants/restaurants.module';
-import { OrdersModule } from './orders/orders.module';
-import { PaymentsModule } from './payments/payments.module';
-import { Country } from './database/entities/country.entity';
-import { Role } from './database/entities/role.entity';
-import { User } from './database/entities/user.entity';
-import { Restaurant } from './database/entities/restaurant.entity';
-import { MenuItem } from './database/entities/menu-item.entity';
-import { Order } from './database/entities/order.entity';
-import { OrderItem } from './database/entities/order-item.entity';
-import { PaymentMethod } from './database/entities/payment-method.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './auth';
+import { UsersModule } from './users';
+import { RestaurantsModule } from './restaurants';
+import { OrdersModule } from './orders';
+import { PaymentsModule } from './payments';
+import { Country, Role, User, Restaurant, MenuItem, Order, OrderItem, PaymentMethod } from './database';
+import { JwtAuthGuard, RolesGuard, CountryScopeGuard } from './common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
-import { RolesGuard } from './common/guards/roles.guard';
-import { CountryScopeGuard } from './common/guards/country-scope.guard';
 
 @Module({
   imports: [

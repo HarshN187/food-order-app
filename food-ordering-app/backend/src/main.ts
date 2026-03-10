@@ -9,6 +9,12 @@ async function bootstrap() {
   // Global Prefix
   app.setGlobalPrefix('api/v1');
 
+  // Enable CORS
+  app.enableCors({
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    credentials: true,
+  });
+
   // Swagger Documentation
   const config = new DocumentBuilder()
     .setTitle('Food Ordering API')
@@ -16,7 +22,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
@@ -27,13 +33,6 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
-  // Enable CORS
-  app.enableCors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
 
   const port = process.env.PORT || 3001;
   await app.listen(port);

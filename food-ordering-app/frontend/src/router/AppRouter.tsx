@@ -1,13 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from '../components/layout/ProtectedRoute';
-import { MainLayout } from '../components/layout/MainLayout';
-import { Login } from '../pages/Login';
-import { Unauthorized } from '../pages/Unauthorized';
-import { Restaurants } from '../pages/Restaurants';
-import { RestaurantDetail } from '../pages/RestaurantDetail';
-import { Orders } from '../pages/Orders';
-import { OrderDetail } from '../pages/OrderDetail';
-import { PaymentMethods } from '../pages/PaymentMethods';
+import { ProtectedRoute, MainLayout } from '../components/layout';
+import { Login, Unauthorized, Restaurants, RestaurantDetail, Orders, OrderDetail, PaymentMethods } from '../pages';
 
 export const AppRouter = () => {
   return (

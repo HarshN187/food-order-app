@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOrder, placeOrder, cancelOrder, removeOrderItem } from '../api/orders.api';
-import type { Order } from '../types';
+import { getMyPaymentMethods } from '../api/payments.api';
+import type { Order, PaymentMethod } from '../types';
 import { LoadingSpinner } from '../components/common/LoadingSpinner';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { ConfirmModal } from '../components/common/ConfirmModal';
@@ -17,13 +18,20 @@ export const OrderDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Payment Methods State
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
   // Modals
   const [isPlaceModalOpen, setIsPlaceModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [_actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    if (id) fetchOrder(id);
+    if (id) {
+      fetchOrder(id);
+      fetchPaymentMethods();
+    }
   }, [id]);
 
   const fetchOrder = async (orderId: string) => {
@@ -38,11 +46,30 @@ export const OrderDetail = () => {
     }
   };
 
+  const fetchPaymentMethods = async () => {
+    try {
+      if (hasRole('ADMIN') || hasRole('MANAGER')) {
+        const pmData = await getMyPaymentMethods();
+        setPaymentMethods(pmData);
+        if (pmData.length > 0) {
+          const defaultPm = pmData.find(p => p.isDefault) || pmData[0];
+          setSelectedPaymentMethod(defaultPm.id);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load payment methods');
+    }
+  };
+
   const handlePlaceOrder = async () => {
     if (!order) return;
+    if (!selectedPaymentMethod) {
+      alert('A payment method is required to place the order.');
+      return;
+    }
     try {
       setActionLoading(true);
-      await placeOrder(order.id);
+      await placeOrder(order.id, selectedPaymentMethod);
       setIsPlaceModalOpen(false);
       fetchOrder(order.id);
     } catch (err: any) {
@@ -187,7 +214,30 @@ export const OrderDetail = () => {
         message="Are you sure you want to checkout and place this order? You will not be able to modify items afterwards."
         onClose={() => setIsPlaceModalOpen(false)}
         onConfirm={handlePlaceOrder}
-      />
+      >
+        <div className="mt-4">
+          <label htmlFor="paymentMethod" className="block text-sm font-medium leading-6 text-gray-900">
+            Select Payment Method
+          </label>
+          <select
+            id="paymentMethod"
+            name="paymentMethod"
+            value={selectedPaymentMethod}
+            onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+            className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          >
+            {paymentMethods.length > 0 ? (
+              paymentMethods.map((pm) => (
+                <option key={pm.id} value={pm.id}>
+                  {pm.type} ending in {pm.lastFour || 'N/A'} {pm.isDefault ? '(Default)' : ''}
+                </option>
+              ))
+            ) : (
+              <option disabled value="">No payment methods found</option>
+            )}
+          </select>
+        </div>
+      </ConfirmModal>
 
       <ConfirmModal
         isOpen={isCancelModalOpen}

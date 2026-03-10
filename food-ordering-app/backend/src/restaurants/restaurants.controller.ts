@@ -1,8 +1,6 @@
 import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { Role } from '../common/enums/role.enum';
+import { RolesGuard, Roles, Role } from '../common';
 
 @Controller('restaurants')
 @UseGuards(RolesGuard)

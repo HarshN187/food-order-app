@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../enums/role.enum';
-import { COUNTRY_SCOPED_KEY } from '../decorators/country-scoped.decorator';
+import { Role } from '../enums';
+import { COUNTRY_SCOPED_KEY } from '../decorators';
 
 @Injectable()
 export class CountryScopeGuard implements CanActivate {

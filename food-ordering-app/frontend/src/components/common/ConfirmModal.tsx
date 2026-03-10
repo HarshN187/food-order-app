@@ -7,11 +7,12 @@ interface ConfirmModalProps {
   isDestructive?: boolean;
   onConfirm: () => void;
   onClose: () => void;
+  children?: React.ReactNode;
 }
 
 export const ConfirmModal = ({
   isOpen, title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel',
-  isDestructive = false, onConfirm, onClose
+  isDestructive = false, onConfirm, onClose, children
 }: ConfirmModalProps) => {
   if (!isOpen) return null;
 
@@ -23,10 +24,11 @@ export const ConfirmModal = ({
           <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
             <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
-                <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                <div className="mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">{message}</p>
+                  <div className="mt-2 text-sm text-gray-500">
+                    <p>{message}</p>
+                    {children && <div className="mt-4 w-full">{children}</div>}
                   </div>
                 </div>
               </div>
